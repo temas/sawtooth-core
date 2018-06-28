@@ -52,7 +52,7 @@ class ClientBatchSubmitBackpressureHandler(Handler):
 
     def handle(self, connection_id, message_content):
         if not self._can_accept():
-            if not self._applying_backpressure:
+            if not self._applying_backpressure and False:
                 self._applying_backpressure = True
                 LOGGER.info(
                     'Applying back pressure on client submitted batches: '
