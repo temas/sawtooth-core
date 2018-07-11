@@ -536,7 +536,7 @@ class BlockPublisher(object):
     def _get_current_queue_limit(self):
         # Limit the number of batches to 2 times the publishing average.  This
         # allows the queue to grow geometrically, if the queue is drained.
-        return max(2 * self._publish_count_average.value,2)
+        return max(2 * self._publish_count_average.value,100)
 
     def get_current_queue_info(self):
         """Returns a tuple of the current size of the pending batch queue
