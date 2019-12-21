@@ -55,6 +55,7 @@ setup(
     install_requires=[
         "cbor>=0.1.23",
         "colorlog",
+        "diskcache",
         "protobuf",
         "lmdb",
         "requests",
