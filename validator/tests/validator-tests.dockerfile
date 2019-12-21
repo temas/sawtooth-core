@@ -54,6 +54,7 @@ RUN apt-get install -y -q \
     python3-pip
 
 RUN pip3 install \
+    diskcache \
     coverage --upgrade
 
 RUN curl -OLsS https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-linux-x86_64.zip \
