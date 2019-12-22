@@ -66,18 +66,18 @@ node ('master') {
             // Use a docker container to build and protogen, so that the Jenkins
             // environment doesn't need all the dependencies.
 
-            stage("Build Lint Requirements") {
-                sh 'docker-compose -f docker/compose/run-lint.yaml build'
-                sh 'docker-compose -f docker/compose/sawtooth-build.yaml up'
-                sh 'docker-compose -f docker/compose/sawtooth-build.yaml down'
-            }
+            // stage("Build Lint Requirements") {
+            //     sh 'docker-compose -f docker/compose/run-lint.yaml build'
+            //     sh 'docker-compose -f docker/compose/sawtooth-build.yaml up'
+            //     sh 'docker-compose -f docker/compose/sawtooth-build.yaml down'
+            // }
 
-            stage("Run Lint") {
-                sh 'docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-python lint-python'
-                sh 'docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-go lint-go'
-                sh 'docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-rust lint-rust'
-                sh 'docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-validator lint-validator'
-            }
+            // stage("Run Lint") {
+            //     sh 'docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-python lint-python'
+            //     sh 'docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-go lint-go'
+            //     sh 'docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-rust lint-rust'
+            //     sh 'docker-compose -f docker/compose/run-lint.yaml up --abort-on-container-exit --exit-code-from lint-validator lint-validator'
+            // }
 
             stage("Build Test Dependencies") {
                 sh 'docker-compose -f docker-compose-installed.yaml build'
