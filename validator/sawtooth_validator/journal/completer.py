@@ -155,7 +155,7 @@ class Completer:
 
                 LOGGER.debug("Request missing predecessor: %s",
                              block.previous_block_id)
-                self._requested[block.previous_block_id] = None
+                self._requested[block.previous_block_id] = 1
                 self._gossip.broadcast_block_request(block.previous_block_id)
                 return None
 
@@ -186,7 +186,7 @@ class Completer:
                     # We have already requested the batch, do not do so again
                     if batch_id in self._requested:
                         return None
-                    self._requested[batch_id] = None
+                    self._requested[batch_id] = 1
                     self._gossip.broadcast_batch_by_batch_id_request(batch_id)
                     building = False
 
@@ -256,7 +256,7 @@ class Completer:
                     # Check to see if the dependency has already been requested
                     if dependency not in self._requested:
                         dependencies.append(dependency)
-                        self._requested[dependency] = None
+                        self._requested[dependency] = 1
                     if dependency not in self._incomplete_batches:
                         self._incomplete_batches[dependency] = [batch]
                     elif batch not in self._incomplete_batches[dependency]:
