@@ -505,6 +505,7 @@ class ConnectionManager(InstrumentedThread):
 
     def run(self):
         has_chain_head = self._current_chain_head_func() is not None
+
         while not self._stopped:
             try:
                 if self._peering_mode == 'dynamic':
@@ -528,7 +529,7 @@ class ConnectionManager(InstrumentedThread):
 
                         self._request_chain_head(peered_connections)
 
-                time.sleep(self._check_frequency)
+                time.sleep(60)
             except Exception:  # pylint: disable=broad-except
                 LOGGER.exception("Unhandled exception during peer refresh")
 
