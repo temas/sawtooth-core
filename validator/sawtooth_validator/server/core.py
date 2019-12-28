@@ -143,7 +143,7 @@ class Validator:
         block_store = BlockStore(block_db)
         # The cache keep time for the journal's block cache must be greater
         # than the cache keep time used by the completer.
-        base_keep_time = 1200
+        base_keep_time = 3600
         block_cache = BlockCache(
             block_store,
             keep_time=int(base_keep_time * 9 / 8),
@@ -270,7 +270,7 @@ class Validator:
             gossip=gossip,
             cache_keep_time=base_keep_time,
             cache_purge_frequency=30,
-            requested_keep_time=300)
+            requested_keep_time=1800)
         self._completer = completer
 
         block_sender = BroadcastBlockSender(completer, gossip)
