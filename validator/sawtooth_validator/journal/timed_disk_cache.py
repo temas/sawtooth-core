@@ -13,12 +13,16 @@
 # limitations under the License.
 # ------------------------------------------------------------------------------
 # pylint: disable=no-name-in-module
+import logging
 from collections.abc import MutableMapping
-from threading import RLock
+import json
 import time
+from diskcache import Cache, RLock
+from google.protobuf.message import Message
 
+LOGGER = logging.getLogger(__name__)
 
-class TimedCache(MutableMapping):
+class TimedDiskCache(MutableMapping):
     """
     A dict like interface that removes entries after sometime of no access.
 
@@ -30,7 +34,16 @@ class TimedCache(MutableMapping):
     """
     class CachedValue:
         def __init__(self, value):
-            self.value = value
+            has_serialize = hasattr(value, "SerializeToString")
+            if has_serialize:
+                self.value = value.SerializeToString()
+                self.message = True
+                self.clazz = value.__class__
+            else:
+                self.value = value
+                self.clazz = value.__class__
+                self.message = False
+
             self.timestamp = time.time()  # the time this State was created,
             # used for house keeping, ie when to flush this from the cache.
 
@@ -40,26 +53,32 @@ class TimedCache(MutableMapping):
             """
             self.timestamp = time.time()
 
+        def decode_value(self):
+            if self.message:
+                msg=self.clazz()
+                msg.ParseFromString(self.value)
+                return msg
+            else:
+                return self.value
+
     def __init__(self, keep_time=30, purge_frequency=30):
-        super(TimedCache, self).__init__()
-        self._lock = RLock()
-        self._cache = {}
+        super(TimedDiskCache, self).__init__()
+        self._cache = Cache()
+        self._lock = RLock(self._cache, "cache-lock")
         self._keep_time = keep_time
         self._purge_frequency = purge_frequency
         self._next_purge_time = time.time() + purge_frequency
 
     def __setitem__(self, key, value):
         with self._lock:
-            if time.time() > self._next_purge_time:
-                self._purge_expired()
-                self._next_purge_time = time.time() + self._purge_frequency
-            self._cache[key] = self.CachedValue(value)
+            cached_value = self.CachedValue(value)
+            self._cache.set(key, cached_value, expire=self._keep_time)
 
     def __getitem__(self, key):
         with self._lock:
-            value = self._cache[key]
-            value.touch()
-            return value.value
+            cached_value = self._cache[key]
+            self._cache.touch(key, expire=self._keep_time)
+            return cached_value.decode_value()
 
     def __delitem__(self, key):
         with self._lock:
@@ -76,8 +95,8 @@ class TimedCache(MutableMapping):
     def __str__(self):
         with self._lock:
             out = []
-            for v in self._cache.values():
-                out.append(str(v.value))
+            for v in self._cache.iterkeys():
+                out.append(str(v))
             return ','.join(out)
 
     @property

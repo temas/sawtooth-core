@@ -94,8 +94,7 @@ class Completer:
                                               cache_purge_frequency)
         self._incomplete_blocks = TimedCache(cache_keep_time,
                                              cache_purge_frequency)
-        self._requested = TimedCache(cache_keep_time,
-                                             cache_purge_frequency)
+        self._requested = TimedCache(cache_keep_time, cache_purge_frequency)
         self._on_block_received = None
         self._on_batch_received = None
         self._has_block = None

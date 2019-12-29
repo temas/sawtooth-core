@@ -661,7 +661,7 @@ class ConnectionManager(InstrumentedThread):
                         #     to_remove.append(endpoint)
                         #     continue
                         # else:
-                            # At maximum retry threashold, increment count
+                        #     At maximum retry threashold, increment count
                         self._static_peer_status[endpoint] = \
                             StaticPeerInfo(
                                 time=time.time(),
