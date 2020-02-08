@@ -177,8 +177,11 @@ class Validator:
             monitor=True,
             max_future_callback_workers=10)
 
-        zmq_identity = hashlib.sha512(
-            time.time().hex().encode()).hexdigest()[:23]
+        # Use the endpoint as the source of zmq identity 
+        # instead of some random time
+#        zmq_identity = hashlib.sha512(
+#            time.time().hex().encode()).hexdigest()[:23]
+        zmq_identity = hashlib.sha512(endpoint).hexdigest()[:23]
 
         secure = False
         if network_public_key is not None and network_private_key is not None:
