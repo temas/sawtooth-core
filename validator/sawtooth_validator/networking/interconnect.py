@@ -705,6 +705,7 @@ class Interconnect:
             address=endpoint,
             dispatcher=dispatcher,
             futures=self._futures,
+            zmq_identity=self._zmq_identity,
             secured=secured,
             server_public_key=server_public_key,
             server_private_key=server_private_key,
