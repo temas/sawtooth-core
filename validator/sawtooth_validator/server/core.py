@@ -441,11 +441,11 @@ class Validator:
         self._network_dispatcher.start()
         self._network_service.start()
 
-        self._gossip.start()
         self._incoming_batch_sender = self._block_publisher.start()
         self._chain_controller.start()
 
         self._completer.set_on_batch_received(self._incoming_batch_sender.send)
+        self._gossip.start()
         signal_event = threading.Event()
 
         signal.signal(signal.SIGTERM,
