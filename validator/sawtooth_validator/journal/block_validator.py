@@ -155,6 +155,7 @@ class BlockValidator:
         if not blkw.block.batches:
             return
 
+        LOGGER.debug('Validating batches in block: %s', blkw)
         scheduler = None
         try:
             while True:
@@ -203,6 +204,7 @@ class BlockValidator:
                 scheduler.cancel()
             raise
 
+        LOGGER.debug('Finalizing schedule for block: %s', blkw)
         scheduler.finalize()
         scheduler.complete(block=True)
         state_hash = None
@@ -343,6 +345,7 @@ class BlockValidator:
         ready = self._block_scheduler.schedule(blocks)
         for block in ready:
             # Schedule the block for processing
+            LOGGER.debug('Submitting block for verification block: %s', block)
             self._thread_pool.submit(
                 self.process_block_verification, block, callback)
 

@@ -516,6 +516,7 @@ impl<BC: BlockCache + 'static, BV: BlockValidator + 'static> ChainController<BC,
             )
             .clone();
 
+        println!("Submit block {} for verification", block);
         state
             .block_validator
             .submit_blocks_for_verification(&[block], sender);
@@ -763,13 +764,15 @@ impl<BC: BlockCache + 'static, BV: BlockValidator + 'static> ChainController<BC,
     }
 
     pub fn queue_block(&self, block: BlockWrapper) {
+        println!("Queuing block {}", block);
         if self.block_queue_sender.is_some() {
             let sender = self.block_queue_sender.clone();
             if let Err(err) = sender.as_ref().unwrap().send(block) {
-                error!("Unable to add block to block queue: {}", err);
+                println!("Unable to add block to block queue: {}", err);
             }
+            println!("Added block to queue");
         } else {
-            debug!(
+            println!(
                 "Attempting to queue block {} before chain controller is started; Ignoring",
                 block
             );
@@ -804,6 +807,7 @@ impl<BC: BlockCache + 'static, BV: BlockValidator + 'static> ChainController<BC,
             let mut guard = self.chain_head_lock.acquire();
             guard.notify_on_chain_updated(notify_block, vec![], vec![]);
         }
+
     }
 
     pub fn start(&mut self) {
@@ -985,9 +989,16 @@ impl<BC: BlockCache + 'static, BV: BlockValidator + 'static> ChainThread<BC, BV>
                         continue;
                     }
                 }
-                Err(_) => break Err(ChainControllerError::BrokenQueue),
-                Ok(block) => block,
+                Err(_) => {
+                    println!("Error BrokenQueue on channel");
+                    break Err(ChainControllerError::BrokenQueue);
+                }
+                Ok(block) => {
+                    println!("Fetched block from queue {}", block);
+                    block
+                }
             };
+            println!("Processing block {}", block);
             self.chain_controller.on_block_received(block)?;
 
             if self.exit.load(Ordering::Relaxed) {
