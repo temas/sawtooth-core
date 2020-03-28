@@ -177,7 +177,7 @@ class Validator:
             monitor=True,
             max_future_callback_workers=10)
 
-        # Use the endpoint as the source of zmq identity 
+        # Use the endpoint as the source of zmq identity
         # instead of some random time
 #        zmq_identity = hashlib.sha512(
 #            time.time().hex().encode()).hexdigest()[:23]

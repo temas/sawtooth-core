@@ -807,7 +807,6 @@ impl<BC: BlockCache + 'static, BV: BlockValidator + 'static> ChainController<BC,
             let mut guard = self.chain_head_lock.acquire();
             guard.notify_on_chain_updated(notify_block, vec![], vec![]);
         }
-
     }
 
     pub fn start(&mut self) {

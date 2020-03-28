@@ -16,7 +16,6 @@
 import logging
 from threading import RLock
 from collections import deque
-from diskcache import Cache
 
 from sawtooth_validator.journal.block_wrapper import BlockWrapper
 from sawtooth_validator.journal.block_wrapper import NULL_BLOCK_IDENTIFIER
