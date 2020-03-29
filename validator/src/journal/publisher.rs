@@ -209,7 +209,8 @@ impl SyncBlockPublisher {
                 "state_view_for_block",
                 (previous_block, &self.state_view_factory),
                 None,
-            ).expect("BlockWrapper, unable to call state_view_for_block")
+            )
+            .expect("BlockWrapper, unable to call state_view_for_block")
     }
 
     fn load_injectors(&self, py: Python, state_root: &str) -> Vec<PyObject> {
@@ -244,7 +245,8 @@ impl SyncBlockPublisher {
                     py,
                     ("sawtooth.publisher.max_batches_per_block",),
                     Some(&kwargs),
-                ).expect("Failed to call settings_cache.get_setting")
+                )
+                .expect("Failed to call settings_cache.get_setting")
                 .extract::<usize>(py)
                 .unwrap();
 
@@ -261,7 +263,8 @@ impl SyncBlockPublisher {
                     py,
                     "previous_block_id",
                     &previous_block.block().header_signature,
-                ).unwrap();
+                )
+                .unwrap();
             kwargs
                 .set_item(py, "signer_public_key", &public_key)
                 .unwrap();
@@ -414,7 +417,8 @@ impl SyncBlockPublisher {
             .call_method(py, "send", (block, injected_batches), None)
             .map_err(|py_err| {
                 ::pylogger::exception(py, "{:?}", py_err);
-            }).expect("BlockSender.send() raised an exception");
+            })
+            .expect("BlockSender.send() raised an exception");
 
         let mut blocks_published_count =
             COLLECTOR.counter("BlockPublisher.blocks_published_count", None, None);
@@ -576,7 +580,8 @@ impl BlockPublisher {
                     }
                 }
                 warn!("PublisherThread exiting");
-            }).unwrap();
+            })
+            .unwrap();
 
         batch_tx
     }
